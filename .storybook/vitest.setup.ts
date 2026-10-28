@@ -28,7 +28,14 @@ vi.mock("next/link", () => {
 
 vi.mock("next/image", () => ({
   __esModule: true,
-  default: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
+  default: ({
+    fill: _fill,
+    priority: _priority,
+    ...props
+  }: React.ImgHTMLAttributes<HTMLImageElement> & {
+    fill?: boolean;
+    priority?: boolean;
+  }) => {
     return React.createElement("img", { ...props });
   },
 }));
@@ -78,3 +85,11 @@ if (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (globalThis as any).ResizeObserver = MockResizeObserver;
 }
+
+// Node 25+ exposes its own localStorage; application code must use jsdom's
+// per-test browser storage rather than the host process's storage object.
+Object.defineProperty(globalThis, "localStorage", {
+  configurable: true,
+  value: (globalThis as unknown as { jsdom: { window: Window } }).jsdom.window
+    .localStorage,
+});

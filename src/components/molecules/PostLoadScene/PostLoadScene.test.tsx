@@ -1,72 +1,59 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import React from "react";
-
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import PostLoadScene from "./PostLoadScene";
 
+beforeEach(() => vi.useFakeTimers());
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 describe("PostLoadScene", () => {
-  it("renders copy and button", () => {
-    render(
-      <PostLoadScene
-        topText="PULLING UP AT THE CLUB."
-        bottomText="BUT WILL YOU GET IN?"
-      />,
-    );
-
+  it("renders copy and enters on the next animation frame", () => {
+    render(<PostLoadScene />);
+    const heading = screen.getByRole("heading", {
+      name: "PULLING UP AT THE CLUB.",
+    });
     expect(
-      screen.getByRole("heading", { name: /pulling up at the club\./i }),
+      screen.getByRole("heading", { name: "BUT WILL YOU GET IN?" }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /but will you get in\?/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /i don't care, just drive/i }),
-    ).toBeInTheDocument();
+    expect(heading).not.toHaveClass("is-entered");
+    act(() => vi.advanceTimersByTime(20));
+    expect(heading).toHaveClass("is-entered");
   });
-
-  it("adds is-entered class after mount (animation start)", () => {
-    const raf = vi
-      .spyOn(window, "requestAnimationFrame")
-      .mockImplementation((cb: FrameRequestCallback) => {
-        cb(0);
-        return 1 as unknown as number;
-      });
-
-    render(<PostLoadScene topText="Top" bottomText="Bottom" />);
-
-    const top = screen.getByRole("heading", { name: /top/i });
-    expect(top.className).toMatch(/is-entered/);
-
-    raf.mockRestore();
-  });
-
-  it("invokes onContinue and sets exiting classes when button clicked", () => {
+  it("finishes the exit animation before advancing, even after repeated clicks", () => {
     const onContinue = vi.fn();
-    const raf = vi
-      .spyOn(window, "requestAnimationFrame")
-      .mockImplementation((cb: FrameRequestCallback) => {
-        cb(0);
-        return 1 as unknown as number;
-      });
-
-    render(
-      <PostLoadScene
-        topText="Top"
-        bottomText="Bottom"
-        onContinue={onContinue}
-      />,
-    );
-
+    render(<PostLoadScene onContinue={onContinue} />);
     const button = screen.getByRole("button", {
-      name: /i don't care, just drive/i,
+      name: "I don't care, just drive",
     });
     fireEvent.click(button);
-
-    expect(onContinue).toHaveBeenCalled();
-    expect(button.className).toMatch(/is-exiting/);
-
-    const bottom = screen.getByRole("heading", { name: /bottom/i });
-    expect(bottom.className).toMatch(/is-exiting/);
-
-    raf.mockRestore();
+    fireEvent.click(button);
+    expect(button).toHaveClass("is-exiting");
+    screen
+      .getAllByRole("heading")
+      .forEach((heading) => expect(heading).toHaveClass("is-exiting"));
+    act(() => vi.advanceTimersByTime(499));
+    expect(onContinue).not.toHaveBeenCalled();
+    act(() => vi.advanceTimersByTime(1));
+    expect(onContinue).toHaveBeenCalledTimes(1);
+    act(() => vi.advanceTimersByTime(1000));
+    expect(onContinue).toHaveBeenCalledTimes(1);
+  });
+  it("cancels a pending advance when unmounted", () => {
+    const onContinue = vi.fn();
+    const view = render(<PostLoadScene onContinue={onContinue} />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "I don't care, just drive" }),
+    );
+    view.unmount();
+    act(() => vi.advanceTimersByTime(1000));
+    expect(onContinue).not.toHaveBeenCalled();
   });
 });

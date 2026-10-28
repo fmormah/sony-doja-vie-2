@@ -16,6 +16,14 @@ GITHUB_PAGES=true NEXT_PUBLIC_PORTFOLIO_DEMO=true NEXT_PUBLIC_BASE_PATH=/sony-do
 
 The hosted version uses the existing local authentication demo. It does not connect visitor music accounts or submit campaign registrations. Original integration code is retained for separately configured deployments.
 
+## Automated tests
+
+Run `npm run test:ci` for the complete application suite. GitHub Pages runs it before building and publishing; a failing test blocks deployment.
+
+Integration coverage uses the real application store, session storage, splash, sign-in, preloader, post-load, and club-entrance components. It exercises the demo journey through dancefloor entry, session restoration, invalid scene URLs, background clicks, and unmount cleanup. Authentication tests cover provider readiness, email validation, pending/failed/successful Apple sign-in, retries, Spotify superfan state, and one-time advancement. Loader tests check timing and both successful and failed asset loading; transition tests check repeated clicks and cancellation.
+
+External authentication services, audio playback, and decorative 3D rendering are mocked. These tests verify application behavior in jsdom, not real OAuth services, visual rendering, or device/browser compatibility.
+
 ## Original project notes
 
 # NextJS Starter
