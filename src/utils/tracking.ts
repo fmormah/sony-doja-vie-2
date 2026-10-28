@@ -1,4 +1,3 @@
-import { sendGTMEvent } from "@next/third-parties/google";
 
 export enum EventCategory {
   SPOTIFY_PRESAVE_CLICK = "spotify_presave_click",
@@ -19,25 +18,15 @@ interface EventData {
   value?: { [k: string]: boolean | string | number | null };
 }
 
-const SONY_CUSTOM_EVENT = "customEvent";
+// Tracking is disabled for this project. Keep the API for existing UI callers.
 
-export const trackEvent = ({ category, value }: EventData) => {
-  sendGTMEvent({ event: SONY_CUSTOM_EVENT, category, ...value });
-};
+export const trackEvent = (_data: EventData): void => {};
 
 type TrackingValue =
   | { [k: string]: boolean | string | number | null }
   | undefined;
 
-export const trackCategory = (category: string, value?: TrackingValue) => {
-  try {
-    if (!category || typeof category !== "string") return;
-    const payload = value && typeof value === "object" ? value : undefined;
-    sendGTMEvent({ event: SONY_CUSTOM_EVENT, category, ...(payload || {}) });
-  } catch {
-    // ignore tracking errors
-  }
-};
+export const trackCategory = (_category: string, _value?: TrackingValue): void => {};
 
 export const trackMusicService = (
   service: "spotify" | "apple",

@@ -28,7 +28,6 @@
     "build:pages": "npm run build && node scripts/prepare-pages.mjs"
   },
   "dependencies": {
-    "@next/third-parties": "^15.3.5",
     "@phantomstudios/css-components": "0.4.0",
     "@pixi/sound": "^6.0.1",
     "@react-three/drei": "^10.4.2",

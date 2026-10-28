@@ -1,8 +1,6 @@
 import "@/theme/global.scss";
 
-import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
-import Script from "next/script";
 import React from "react";
 
 import MobileResizeReload from "@/components/atoms/MobileResizeReload/MobileResizeReload";
@@ -14,7 +12,6 @@ import AuthProviders from "@/contexts/AuthProviders";
 import { AppStoreProvider } from "@/store/AppStore";
 import { FONT_VARIABLES } from "@/theme/fonts";
 
-const GTM_CONTAINER = "GTM-NL6F4ZW";
 
 export const metadata: Metadata = {
   title: "Doja Cat: Club Vie",
@@ -46,16 +43,6 @@ export default function RootLayout({ children }: Props) {
           src="https://cdn.fonts.net/kit/cb3c34e4-1fb7-422b-bdba-51c4665e58e8/cb3c34e4-1fb7-422b-bdba-51c4665e58e8_enhanced.js"
         />
       </head>
-      {process.env.NEXT_PUBLIC_PORTFOLIO_DEMO !== "true" && <GoogleTagManager gtmId={GTM_CONTAINER} />}
-      <Script
-        id="gtag-datalayer"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}`,
-        }}
-      />
       <body className={FONT_VARIABLES}>
         <AppStoreProvider>
           <AuthProviders>
