@@ -1,0 +1,365 @@
+@import "@/theme/mixins";
+@import "@/theme/tokens";
+
+.ContentPopup {
+  align-items: center;
+  background: rgb(0, 0, 0, 98%);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  overflow: clip;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  transition: opacity 0.4s ease-in-out;
+  width: 100%;
+  z-index: 9999;
+
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  // While intro/outro plays, blend the overlay
+  &.is-open.is-intro,
+  &.is-open.is-outro {
+    mix-blend-mode: multiply;
+  }
+
+  &__container {
+    animation: slide-up 0.5s ease-out;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100vh;
+    max-width: 100vw;
+    position: relative;
+    width: 100%;
+  }
+
+  &__header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    left: 0;
+    padding: 2rem 3rem;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    z-index: 10;
+
+    @media (max-width: $bp-md) {
+      justify-content: flex-end;
+      padding: 1.5rem;
+    }
+  }
+
+  &__viewMore {
+    background: white;
+    border: none;
+    border-radius: 50px;
+    color: black;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 2rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 20px rgb(255, 255, 255, 30%);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: $bp-md) {
+      display: none;
+    }
+  }
+
+  &__close {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateX(5px);
+
+      .ContentPopup__closeIcon {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  &__closeText {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+
+    @media (max-width: $bp-md) {
+      display: none;
+    }
+  }
+
+  &__closeIcon {
+    align-items: center;
+    background: white;
+    border-radius: 50%;
+    color: black;
+    display: flex;
+    font-size: 2rem;
+    height: 40px;
+    justify-content: center;
+    line-height: 1;
+    transition: transform 0.3s ease;
+    width: 40px;
+  }
+
+  &__content {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    overflow: clip;
+    overflow-y: auto;
+    padding: 6rem 3rem 3rem;
+    position: relative;
+    transition: opacity 400ms ease-in-out;
+    width: 100%;
+
+    @media (max-width: $bp-md) {
+      padding: 5rem 0 2rem;
+    }
+
+    // Subtle neon/florescent flicker background using rose image
+    &::before,
+    &::after {
+      background-image: url("/assets/images/scene/DanceFloor/rose.webp");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      content: "";
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: -1;
+    }
+
+    // Base image with subtle flicker
+    &::before {
+      animation: neon-flicker 6s infinite ease-in-out;
+      filter: brightness(1.35) saturate(1.25);
+      opacity: 0.18;
+    }
+
+    // Soft glow layer
+    &::after {
+      animation: neon-glow 6s infinite ease-in-out;
+      filter: blur(16px) brightness(1.6) saturate(1.4);
+      mix-blend-mode: screen;
+      opacity: 0.14;
+    }
+  }
+
+  &__mobileCTA {
+    display: none;
+    justify-content: center;
+    margin-top: 1rem;
+    padding: 0 1.5rem 1.25rem;
+    position: relative;
+    z-index: 10;
+
+    @media (max-width: $bp-md) {
+      display: flex;
+
+      .ContentPopup__viewMore {
+        display: flex;
+      }
+    }
+
+    // Make the CTA button nicely sized on mobile
+    .Button {
+      max-width: 320px;
+      width: 100%;
+    }
+  }
+
+  &__default {
+    color: white;
+    text-align: center;
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.25rem;
+      opacity: 0.7;
+    }
+  }
+
+  // Intro overlay styles
+  &__introOverlay {
+    align-items: center;
+    background: transparent;
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    position: absolute;
+    z-index: 20;
+  }
+
+  &__introVideo {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  // Content/Header fade visibility states
+  &.is-intro {
+    .ContentPopup__content,
+    .ContentPopup__header {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  &.is-open:not(.is-intro, .is-outro) {
+    .ContentPopup__content,
+    .ContentPopup__header {
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 400ms ease-in-out;
+    }
+  }
+
+  &.is-outro {
+    .ContentPopup__content,
+    .ContentPopup__header {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 250ms ease-in-out;
+    }
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Subtle neon/fluorescent flicker
+@keyframes neon-flicker {
+  0% {
+    filter: brightness(1.35) saturate(1.25);
+    opacity: 0.18;
+  }
+
+  5% {
+    opacity: 0.1;
+  }
+
+  8% {
+    opacity: 0.22;
+  }
+
+  10% {
+    opacity: 0.16;
+  }
+
+  13% {
+    opacity: 0.24;
+  }
+
+  20% {
+    opacity: 0.18;
+  }
+
+  30% {
+    opacity: 0.2;
+  }
+
+  45% {
+    opacity: 0.12;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+
+  60% {
+    opacity: 0.18;
+  }
+
+  75% {
+    opacity: 0.12;
+  }
+
+  85% {
+    opacity: 0.22;
+  }
+
+  100% {
+    filter: brightness(1.35) saturate(1.25);
+    opacity: 0.18;
+  }
+}
+
+@keyframes neon-glow {
+  0% {
+    opacity: 0.14;
+  }
+
+  10% {
+    opacity: 0.08;
+  }
+
+  15% {
+    opacity: 0.18;
+  }
+
+  25% {
+    opacity: 0.12;
+  }
+
+  40% {
+    opacity: 0.16;
+  }
+
+  55% {
+    opacity: 0.08;
+  }
+
+  70% {
+    opacity: 0.18;
+  }
+
+  90% {
+    opacity: 0.1;
+  }
+
+  100% {
+    opacity: 0.14;
+  }
+}

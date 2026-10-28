@@ -1,0 +1,81 @@
+.container {
+  background: black;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+
+  button {
+    margin-top: 20px;
+    padding: 10px 24px;
+  }
+}
+
+.svgBackground {
+  height: 100%;
+  left: 0;
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.svgFlicker {
+  /* Reference project uses animations.glitch-loop; omitted here if not available */
+}
+
+.content {
+  align-items: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  transform: translateY(-30px);
+  z-index: 2;
+}
+
+.errorText {
+  color: white;
+  font-family: VCHenrietta, serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 2%;
+  line-height: 16px;
+  text-align: center;
+}
+
+.mainSvg {
+  height: 400px;
+  position: relative;
+  width: 400px;
+
+  @media (width <= 768px) {
+    height: 350px;
+    width: 350px;
+  }
+}
+
+.description {
+  color: white;
+  font-family: VCHenrietta, serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 2%;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* using shared Button styles; local backButton removed */

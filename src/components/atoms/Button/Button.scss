@@ -1,0 +1,116 @@
+@use "../../../theme/tokens" as *;
+@use "../../../theme/mixins" as *;
+
+.Button {
+  @include button-reset;
+
+  background-color: $color-white;
+  color: $color-black;
+  display: flex;
+  gap: $space-xs;
+  padding: $space-sm $space-lg $space-sm $space-md;
+
+  // Prevent selection/highlight and tap highlight on mobile
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  -webkit-touch-callout: none;
+  transition-duration: $transition-fast;
+  user-select: none;
+
+  // Ensure nested contents are also non-selectable
+  *,
+  *::before,
+  *::after {
+    user-select: none;
+  }
+
+  &:hover,
+  &:focus,
+  &:active,
+  &:visited {
+    text-decoration: none;
+  }
+
+  .Button__icon img {
+    height: 24px;
+    margin-top: 2px;
+    transition: filter 0.2s ease-in-out;
+    width: 24px;
+  }
+
+  .Button__label {
+    @include button-typography;
+
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .Button__label-text {
+    display: block;
+    transition: transform $transition-medium cubic-bezier(0.4, 0, 0.2, 1);
+
+    // Second text starts above, hidden
+    &:nth-child(2) {
+      position: absolute;
+      top: 0;
+      transform: translateY(-100%);
+    }
+  }
+
+  &:hover {
+    background-color: $color-brand-red;
+
+    .Button__icon img {
+      filter: grayscale(1) brightness(0);
+    }
+
+    .Button__label-text {
+      // First text slides down
+      &:nth-child(1) {
+        transform: translateY(100%);
+      }
+
+      // Second text slides to normal position
+      &:nth-child(2) {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--icon-only {
+    gap: 0;
+    height: $btn-height;
+    padding: $space-sm;
+    width: $btn-height;
+
+    .Button__label {
+      display: none;
+    }
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    background-color: #777;
+    cursor: not-allowed;
+    opacity: 0.45;
+    pointer-events: none;
+
+    img {
+      filter: grayscale(0.5) brightness(0);
+    }
+  }
+
+  /* Apple icon vertical tweak when used with text label */
+  & .Button__icon img[src*="apple.svg"] {
+    margin-top: 0;
+  }
+
+  &--no-icon {
+    padding: $space-sm $space-md;
+  }
+}

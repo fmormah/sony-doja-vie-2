@@ -1,0 +1,6 @@
+# Ignore reference/example projects and build artifacts from stylelint
+reference-projects/**
+storybook-static/**
+out/**
+.next/**
+dist/**

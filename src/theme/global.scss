@@ -1,0 +1,79 @@
+@use "./typography";
+@use "./components/index";
+
+html {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.screen-reader-only {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+  font-family: var(--font-vc-henrietta), "VC Henrietta Trial", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header/Footer visibility by scene (driven by body class from SceneManager) */
+
+/* Default hidden */
+.PageHeader,
+.Footer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--scene-fade-duration, 800ms) ease;
+}
+
+.Footer {
+  pointer-events: auto;
+}
+
+body.is-scene-highway .PageHeader,
+body.is-scene-postLoad .PageHeader,
+body.is-scene-highway .Footer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--scene-fade-duration, 800ms) ease;
+}
+
+/* Visible scenes */
+body.is-scene-signIn .PageHeader,
+body.is-scene-signIn .Footer,
+body.is-scene-club .PageHeader,
+body.is-scene-club .Footer,
+body.is-scene-dancefloor .PageHeader,
+body.is-scene-dancefloor .Footer {
+  opacity: 1;
+  transition: opacity var(--scene-fade-duration, 800ms) ease;
+}
+
+/* Mute toggle visibility by scene */
+.MuteToggle {
+  display: none;
+}
+
+/* Show MuteToggle starting at the club (door) scene and beyond */
+body.is-scene-club .MuteToggle,
+body.is-scene-dancefloor .MuteToggle {
+  display: inline-flex;
+}

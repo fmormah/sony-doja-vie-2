@@ -1,0 +1,79 @@
+@import "@/theme/mixins";
+@import "@/theme/tokens";
+
+.HotlineTemplate {
+  align-items: center;
+  color: white;
+  display: flex;
+  height: 70%;
+  justify-content: center;
+  width: 100%;
+
+  &__imageWrap {
+    max-width: min(1000px, 90vw);
+    min-width: 438px;
+    position: relative;
+    width: 100%;
+  }
+
+  &__image {
+    display: block;
+    height: auto;
+    margin: 0 auto;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  // Neon ripple effect - adjust top/left to align with phone speaker
+  &__ripples {
+    height: 120px;
+    left: 52.5%;
+    pointer-events: none;
+    position: absolute;
+    top: 39%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    z-index: 2;
+
+    span {
+      animation: hotline-ripple 2.4s ease-out infinite;
+      border: 2px solid white;
+      border-radius: 50%;
+      box-shadow:
+        0 0 12px rgb(96, 115, 255, 100%),
+        0 0 24px rgb(96, 115, 255, 100%),
+        0 0 48px rgb(96, 115, 255, 100%);
+      display: block;
+      height: 100%;
+      left: 0;
+      opacity: 0.55;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    span:nth-child(2) {
+      animation-delay: 0.6s;
+    }
+
+    span:nth-child(3) {
+      animation-delay: 1.2s;
+    }
+  }
+}
+
+@keyframes hotline-ripple {
+  0% {
+    opacity: 0.55;
+    transform: scale(0);
+  }
+
+  60% {
+    opacity: 0.18;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}

@@ -1,0 +1,25 @@
+@import "@/theme/mixins";
+@import "@/theme/tokens";
+
+.TourTemplate {
+  align-items: center;
+  color: white;
+  display: flex;
+  height: 70%;
+  justify-content: center;
+  width: 100%;
+
+  &__imageWrap {
+    max-width: min(1000px, 90vw);
+    min-width: 438px;
+    width: 100%;
+  }
+
+  &__image {
+    display: block;
+    height: auto;
+    margin: 0 auto;
+    max-width: 800px;
+    width: 100%;
+  }
+}

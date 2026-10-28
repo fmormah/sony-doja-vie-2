@@ -1,0 +1,666 @@
+@use "../../../theme/tokens" as *;
+
+.ClubScene {
+  --club-color-date: #6073ff;
+  --club-color-rose: #ff9e39;
+  --club-color-brake: #f00;
+  --club-color-neon-magenta: #f0f;
+  --club-fog-opacity: 0.3;
+  --car-zoom-shift-y: 0%;
+  --car-zoom-shift-x: 3%;
+  --drift-duration: 16000ms;
+  --drift-rotate: 0.2deg;
+  --drift-x: 0.8%;
+  --drift-y: 0.5%;
+
+  inset: 0;
+  opacity: var(--scene-opacity, 1);
+  position: fixed;
+  transform: scale(var(--final-zoom, 1));
+  transition:
+    transform var(--final-zoom-duration, 1800ms)
+      var(--final-zoom-timing, cubic-bezier(0.4, 0, 0.2, 1)),
+    opacity 1500ms ease-in;
+}
+
+.ClubScene__blackout {
+  background: #000;
+  inset: 0;
+  opacity: var(--blackout, 0);
+  pointer-events: none;
+  position: fixed;
+  transition: opacity 1500ms ease-in;
+  z-index: 1000;
+}
+
+.ClubScene__bgWrap {
+  animation: handheld-drift var(--drift-duration) ease-in-out infinite;
+  inset: 0;
+  position: absolute;
+  will-change: transform;
+}
+
+.ClubScene__bg {
+  object-fit: cover;
+  object-position: top center;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  transform: scale(var(--press-zoom, 1));
+  transition: transform var(--zoom-duration, 900ms) cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.ClubScene.is-zoomed .ClubScene__bg {
+  transform: scale(var(--club-zoom-scale, 1.08)) scale(var(--press-zoom, 1));
+}
+
+.ClubScene.is-zoomed {
+  --car-zoom-shift-y: 3%;
+  --car-zoom-shift-x: 1.5%;
+}
+
+.ClubScene__reveal {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+}
+
+.ClubScene__panel {
+  background-color: $color-black;
+  left: 0;
+  position: absolute;
+  right: 0;
+  transition: transform var(--reveal-duration, 800ms) ease;
+  will-change: transform;
+}
+
+.ClubScene__panel--top {
+  height: 50vh;
+  top: 0;
+  transform: translateY(0);
+}
+
+.ClubScene__panel--bottom {
+  bottom: 0;
+  height: 50vh;
+  transform: translateY(0);
+}
+
+.ClubScene.is-revealed {
+  .ClubScene__panel--top {
+    transform: translateY(-100%);
+  }
+
+  .ClubScene__panel--bottom {
+    transform: translateY(100%);
+  }
+}
+
+.ClubScene__car {
+  bottom: 0;
+  position: absolute;
+  right: 0;
+  transform: scale(var(--press-zoom, 1));
+  transition: transform var(--zoom-duration, 900ms) cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-hidden-by-visibility {
+    display: none;
+  }
+}
+
+.ClubScene.is-zoomed .ClubScene__car {
+  transform: scale(var(--club-zoom-scale, 1.08)) scale(var(--press-zoom, 1));
+}
+
+.ClubScene__carInner {
+  transform: translate(
+    calc(-1 * var(--car-start-x, 30%) - var(--car-zoom-shift-x, 0%)),
+    calc(-1 * var(--car-start-y, 60%) + var(--car-zoom-shift-y, 0%))
+  );
+  transition: transform var(--car-duration, 2500ms)
+    cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ClubScene.is-zoomed:not(.is-car-in) .ClubScene__carInner {
+  transition: transform var(--zoom-duration, 900ms) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ClubScene.is-car-in .ClubScene__carInner {
+  transform: translate(
+    calc(-1 * (var(--car-end-x, 5%) + 3%) - var(--car-zoom-shift-x, 0%)),
+    /* overshoot a bit more left */
+      calc(-1 * (var(--car-end-y, 20%) - 5%) + var(--car-zoom-shift-y, 0%))
+      /* overshoot downward */
+  );
+}
+
+.ClubScene.is-car-in.is-car-overshoot .ClubScene__carInner {
+  transform: translate(
+    calc(-1 * (var(--car-end-x, 5%) + 3%) - var(--car-zoom-shift-x, 0%)),
+    calc(-1 * (var(--car-end-y, 20%) - 5%) + var(--car-zoom-shift-y, 0%))
+  );
+}
+
+.ClubScene.is-car-in.is-car-settle .ClubScene__carInner {
+  transform: translate(
+    calc(-1 * var(--car-end-x, 5%) - var(--car-zoom-shift-x, 0%)),
+    calc(-1 * var(--car-end-y, 20%) + var(--car-zoom-shift-y, 0%))
+  );
+  transition: transform var(--car-settle-duration, 2100ms) ease-out;
+}
+
+/* Prevent scene flash before intro video starts */
+
+/* Hide underlying scene until the video is ready; the video itself stays visible */
+body.is-scene-club .ClubScene:not(.is-video-intro) {
+  opacity: 1;
+}
+
+body.is-scene-club .ClubScene.is-video-intro {
+  opacity: 0;
+}
+
+body.is-scene-club video.ClubScene__introVideo {
+  opacity: 1;
+}
+
+.ClubScene__introVideo {
+  height: 100%;
+  inset: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 20;
+}
+
+.ClubScene__carImg {
+  animation: handheld-drift var(--drift-duration) ease-in-out infinite;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  width: 100vh;
+  will-change: transform;
+}
+
+.ClubScene__fog {
+  bottom: 0;
+  height: auto;
+  inset-inline: 0;
+  max-width: 100%;
+  mix-blend-mode: luminosity;
+  opacity: var(--club-fog-opacity);
+  pointer-events: none;
+  position: absolute;
+  transform: scale(1);
+  vertical-align: middle;
+  z-index: 1;
+}
+
+.ClubScene__fogCanvas {
+  height: 100vh;
+}
+
+.ClubScene__car-break-light {
+  background-color: var(--club-color-brake);
+  border-radius: 100%;
+  display: block;
+  filter: drop-shadow(0 0 21px var(--club-color-brake))
+    drop-shadow(0 0 14px var(--club-color-brake))
+    drop-shadow(0 0 10px var(--club-color-brake));
+  height: 9%;
+  left: 13.5%;
+  mix-blend-mode: plus-lighter;
+  opacity: 0.5;
+  position: absolute;
+  top: 38%;
+  width: 4%;
+  z-index: 2;
+
+  &.b {
+    left: 36%;
+    top: 42%;
+  }
+
+  &::after {
+    background-color: var(--club-color-brake);
+    border: 1px solid var(--club-color-brake);
+    border-radius: 100%;
+    content: "";
+    display: block;
+    filter: drop-shadow(0 0 21px var(--club-color-brake))
+      drop-shadow(0 0 14px var(--club-color-brake))
+      drop-shadow(0 0 10px var(--club-color-brake));
+    height: 3px;
+    left: -61px;
+    mix-blend-mode: plus-lighter;
+    opacity: 0.5;
+    position: absolute;
+    top: 38%;
+    width: 137px;
+    z-index: 2;
+  }
+
+  &::before {
+    background-color: var(--club-color-neon-magenta);
+    border-radius: 100%;
+    box-shadow: 0 0 26px 1px var(--club-color-neon-magenta);
+    content: "";
+    display: block;
+    filter: drop-shadow(0 0 21px var(--club-color-neon-magenta))
+      drop-shadow(0 0 14px var(--club-color-neon-magenta))
+      drop-shadow(0 0 10px var(--club-color-neon-magenta));
+    height: 0;
+    left: -246px;
+    mix-blend-mode: plus-lighter;
+    opacity: 0.5;
+    position: absolute;
+    top: 110px;
+    transform: rotate(164deg);
+    width: 229px;
+    z-index: 2;
+  }
+}
+
+.rose-light {
+  animation: rose-pulse 2800ms ease-in-out infinite;
+  background-color: var(--club-color-rose);
+  box-shadow: 0 0 100px 75px var(--club-color-rose);
+  height: 150px;
+  left: 50%;
+  mix-blend-mode: color-dodge;
+  opacity: 0.1;
+  position: absolute;
+  top: 33%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  z-index: 2;
+}
+
+.ClubScene__caption {
+  bottom: 70px;
+  height: 7em;
+  left: 50%;
+  max-width: 400px;
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  transform: translateX(-50%);
+  width: min(90vw, 900px);
+}
+
+.ClubScene__captionLine {
+  color: $color-white;
+  font-family: var(--font-vc-henrietta), "VC Henrietta Trial", sans-serif;
+  font-size: 20px;
+  left: 0;
+  line-height: 140%;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--text-fade-duration, 600ms) ease,
+    transform var(--text-fade-duration, 600ms) ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.is-exiting {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+.ClubScene__denied {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--text-fade-duration, 600ms) ease;
+  z-index: 3;
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+.ClubScene__deniedImg {
+  height: auto;
+  max-height: 50vh;
+  width: 125px;
+}
+
+/* Center CTA (release day) */
+.ClubScene__cta {
+  align-items: center;
+  animation: fade-in 600ms ease forwards;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+  z-index: 4;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.ClubScene__ctaWrap {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  pointer-events: auto;
+  position: relative;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.ClubScene__ctaButton {
+  align-items: center;
+  display: flex;
+  height: 120px;
+  justify-content: center;
+  position: relative;
+  width: 120px;
+}
+
+.ClubScene__ctaBase {
+  align-items: center;
+  background: $color-white;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  display: flex;
+  height: 12px;
+  justify-content: center;
+  position: absolute;
+  transition:
+    width 400ms ease-in-out,
+    height 400ms ease-in-out,
+    background-color 400ms ease-in-out,
+    border-color 400ms ease-in-out;
+  width: 12px;
+}
+
+.ClubScene__ctaWrap:hover .ClubScene__ctaBase,
+.ClubScene__ctaWrap.is-hover .ClubScene__ctaBase {
+  background: transparent;
+  border-color: $color-white;
+  height: 120px;
+  width: 120px;
+}
+
+.ClubScene__ctaIcon {
+  background-color: $color-white;
+  height: 32px;
+  mask: url("/assets/images/scene/DoorScene/v-shaped-arrow-up%201.svg")
+    no-repeat center / contain;
+  opacity: 0;
+  transform: scale(1, 0.8);
+  transition:
+    opacity 200ms ease,
+    background-color 200ms linear;
+  width: 32px;
+}
+
+.ClubScene__ctaWrap:hover .ClubScene__ctaIcon,
+.ClubScene__ctaWrap.is-hover .ClubScene__ctaIcon {
+  opacity: 1;
+}
+
+.ClubScene__ctaLabel {
+  color: $color-white;
+  font-family: CompactaPro, sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  margin: 0;
+  opacity: 0;
+  text-align: center;
+  text-transform: uppercase;
+  transition: opacity 200ms ease;
+}
+
+.ClubScene__ctaWrap:hover .ClubScene__ctaLabel,
+.ClubScene__ctaWrap.is-hover .ClubScene__ctaLabel {
+  opacity: 1;
+}
+
+.ClubScene__ctaProgress {
+  align-items: center;
+  display: flex;
+  height: 124px;
+  inset: -2px;
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+  width: 124px;
+}
+
+.ClubScene__ctaProgress svg {
+  height: 124px;
+  transform: rotate(-90deg);
+  width: 124px;
+}
+
+.ClubScene__ctaProgress circle {
+  fill: none;
+  stroke: var(--club-color-date);
+  stroke-linecap: round;
+  stroke-width: 4px;
+  transition:
+    stroke 150ms linear,
+    opacity 200ms ease;
+}
+
+.ClubScene__date {
+  color: var(--club-color-date);
+}
+
+/* Brake light animations */
+.ClubScene.is-brake-flicker .ClubScene__car-break-light,
+.ClubScene.is-brake-flicker .ClubScene__car-break-light--a,
+.ClubScene.is-brake-flicker .ClubScene__car-break-light--b {
+  animation: brake-flicker 700ms steps(10, end) 1;
+}
+
+.ClubScene.is-brake-off .ClubScene__car-break-light,
+.ClubScene.is-brake-off .ClubScene__car-break-light--a,
+.ClubScene.is-brake-off .ClubScene__car-break-light--b {
+  animation: brake-fade 900ms ease forwards;
+}
+
+@keyframes rose-pulse {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.15;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes brake-flicker {
+  0% {
+    opacity: 0.5;
+  }
+
+  10% {
+    opacity: 0.1;
+  }
+
+  20% {
+    opacity: 0.6;
+  }
+
+  30% {
+    opacity: 0.2;
+  }
+
+  40% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 0.15;
+  }
+
+  60% {
+    opacity: 0.6;
+  }
+
+  70% {
+    opacity: 0.25;
+  }
+
+  80% {
+    opacity: 0.5;
+  }
+
+  90% {
+    opacity: 0.2;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes brake-fade {
+  0% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0.05;
+  }
+}
+
+@keyframes handheld-drift {
+  0% {
+    transform: translate(0, 0) rotate(0);
+  }
+
+  12.5% {
+    transform: translate(
+        calc(var(--drift-x) * -0.6),
+        calc(var(--drift-y) * 0.5)
+      )
+      rotate(calc(var(--drift-rotate) * -0.6));
+  }
+
+  25% {
+    transform: translate(calc(var(--drift-x) * -1), var(--drift-y))
+      rotate(calc(var(--drift-rotate) * -1));
+  }
+
+  37.5% {
+    transform: translate(
+        calc(var(--drift-x) * -0.4),
+        calc(var(--drift-y) * -0.6)
+      )
+      rotate(calc(var(--drift-rotate) * -0.3));
+  }
+
+  50% {
+    transform: translate(var(--drift-x), calc(var(--drift-y) * -1))
+      rotate(var(--drift-rotate));
+  }
+
+  62.5% {
+    transform: translate(calc(var(--drift-x) * 0.4), calc(var(--drift-y) * 0.6))
+      rotate(calc(var(--drift-rotate) * 0.3));
+  }
+
+  75% {
+    transform: translate(calc(var(--drift-x) * 0.6), calc(var(--drift-y) * 0.5))
+      rotate(calc(var(--drift-rotate) * 0.5));
+  }
+
+  87.5% {
+    transform: translate(
+        calc(var(--drift-x) * 0.2),
+        calc(var(--drift-y) * -0.3)
+      )
+      rotate(calc(var(--drift-rotate) * 0.2));
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ClubScene__bgWrap,
+  .ClubScene__carImg {
+    animation: none;
+  }
+}
+
+/* Fog animations */
+@keyframes fog-pyramid-pulse {
+  0% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.02);
+  }
+
+  100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes fog-ground-pulse {
+  0% {
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.9;
+  }
+}
+
+/* Hide car on small screens */
+@media (width <= 768px) {
+  .ClubScene__car {
+    display: none;
+  }
+}

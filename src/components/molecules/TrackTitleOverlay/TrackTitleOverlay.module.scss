@@ -1,0 +1,75 @@
+@use "../../../theme/tokens" as *;
+
+.overlay {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+}
+
+.centerLine {
+  background: #f00;
+  bottom: 0;
+  left: 50%;
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  width: 2px;
+  z-index: 11;
+}
+
+.textMask {
+  /* Static mask pinned to viewport center: left dim (35%), right full (100%) */
+  inset: 0;
+  mask-image: linear-gradient(
+    to right,
+    rgb(0 0 0 / 35%) 0%,
+    rgb(0 0 0 / 35%) 49.9%,
+    rgb(0 0 0 / 100%) 50%,
+    rgb(0 0 0 / 100%) 100%
+  );
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+}
+
+.textContainer {
+  animation: fade-in 1.5s ease-out forwards;
+  display: flex;
+  opacity: 0;
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  user-select: none;
+  white-space: nowrap;
+
+  @media (max-width: $bp-lg) {
+    left: 31.3%;
+  }
+
+  @media (max-width: $bp-sm) {
+    left: 41.3%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.textLine {
+  color: #fff;
+  display: inline-block;
+  font-family: CompactaPro, sans-serif;
+  font-size: 242px;
+  font-weight: 300;
+  letter-spacing: -3%;
+  line-height: 85%;
+  text-transform: uppercase;
+}

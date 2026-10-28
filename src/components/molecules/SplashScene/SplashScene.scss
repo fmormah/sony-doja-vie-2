@@ -1,0 +1,22 @@
+.SplashScene {
+  align-items: center;
+  background: #000;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 2000; // above header/footer and most scenes
+
+  &__video {
+    max-height: 80vh;
+    max-width: 80vw;
+    opacity: 1;
+    transition: opacity 800ms ease;
+  }
+}
+
+.SplashScene.is-fading {
+  .SplashScene__video {
+    opacity: 0;
+  }
+}

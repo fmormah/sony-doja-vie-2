@@ -1,0 +1,9 @@
+.RotateOverlay {
+  inset: 0;
+  position: fixed;
+  z-index: 9999;
+}
+
+.RotateOverlayImage {
+  object-fit: cover;
+}

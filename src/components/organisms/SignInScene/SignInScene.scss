@@ -1,0 +1,127 @@
+@use "../../../theme/tokens" as *;
+
+.SignInScene {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100svh;
+  padding: $space-lg $space-md;
+}
+
+.SignInScene__container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: $space-md;
+  max-width: 400px;
+  width: 100%;
+}
+
+.SignInScene__media {
+  width: 100%;
+
+  @media (max-width: $bp-sm) {
+    margin-inline: auto;
+    max-width: 60%;
+  }
+}
+
+.SignInScene__video {
+  border-radius: 12px;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.SignInScene__intro {
+  color: #fff;
+  margin-top: -45px;
+  text-align: center;
+  text-shadow: 0 0 10px #fff;
+}
+
+.SignInScene__actions {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: $space-sm;
+  margin-top: $space-xs;
+  width: 100%;
+}
+
+.SignInScene__swap-container {
+  height: $btn-height;
+  position: relative;
+  width: 100%;
+}
+
+.SignInScene__apple-button {
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  transform: translateY(0);
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out;
+  width: 100%;
+  z-index: 2;
+
+  &--hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    z-index: 1;
+  }
+}
+
+.SignInScene__email-input {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out;
+  width: 100%;
+  z-index: 1;
+
+  &--visible {
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 2;
+  }
+}
+
+.SignInScene__divider {
+  align-items: center;
+  color: rgba($color-white, 0.5);
+  display: flex;
+  font-family: var(--font-vc-henrietta), "VC Henrietta Trial", sans-serif;
+  font-size: 14px;
+  justify-content: center;
+  margin: $space-xs 0;
+  position: relative;
+  width: 100%;
+
+  span {
+    background-color: $color-black;
+    padding: 0 $space-md;
+    position: relative;
+    z-index: 1;
+  }
+
+  &::before {
+    background-color: rgba($color-white, 0.2);
+    content: "";
+    height: 1px;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+  }
+}
+
+.SignInScene__legal {
+  color: rgb(255 255 255 / 50%);
+  text-align: center;
+}

@@ -1,0 +1,64 @@
+.rain {
+  --rain-opacity: 0.35;
+  --rain-mix-blend: color-dodge;
+  --rain-color-top: rgb(13 52 58);
+  --rain-color-bottom: rgb(255 255 255 / 60%);
+  --fall-y: 900px;
+  --fall-x: 0px;
+
+  animation: rain-sway 4s ease-in-out infinite alternate;
+  filter: blur(1px);
+  height: 100%;
+  left: 0;
+  mix-blend-mode: var(--rain-mix-blend);
+  opacity: var(--rain-opacity);
+  position: absolute;
+  top: 0;
+  transform-origin: center;
+  width: 100%;
+  z-index: 2;
+}
+
+.drop {
+  animation: fall 0.63s linear infinite;
+  position: absolute;
+}
+
+.drop-rod {
+  background: -webkit-gradient(
+    linear,
+    0% 0%,
+    0% 100%,
+    from(var(--rain-color-top)),
+    to(var(--rain-color-bottom))
+  );
+  background: linear-gradient(
+    to bottom,
+    var(--rain-color-top) 0%,
+    var(--rain-color-bottom) 100%
+  );
+  height: 89px;
+  transform: rotate(var(--drop-rotate, 0deg));
+  transform-origin: top center;
+  width: 1px;
+}
+
+@keyframes fall {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(var(--fall-x), var(--fall-y));
+  }
+}
+
+@keyframes rain-sway {
+  0% {
+    transform: rotate(10deg);
+  }
+
+  100% {
+    transform: rotate(15deg);
+  }
+}

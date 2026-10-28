@@ -1,0 +1,27 @@
+.CanvasElement {
+  background-color: rgb(53, 53, 53);
+  border: none;
+  height: 100vh;
+  margin: 0 auto;
+  opacity: 1;
+  padding: 0;
+  pointer-events: auto;
+  position: absolute;
+  width: 100vw;
+}
+
+.fitContainer {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.transparent {
+  background-color: transparent;
+}
+
+.noPointer {
+  pointer-events: none;
+}

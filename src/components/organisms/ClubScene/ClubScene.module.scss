@@ -1,0 +1,295 @@
+@use "@/theme/tokens" as *;
+
+.ClubScene {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+}
+
+.background {
+  height: 100%;
+  inset: 0;
+  opacity: var(--dance-opacity, 1);
+  position: absolute;
+  transition: opacity 1.5s ease-in-out;
+  width: 100%;
+  z-index: 1;
+}
+
+.foreground {
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+
+  &.isBlended {
+    mix-blend-mode: plus-lighter;
+  }
+}
+
+.canvasWrap {
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+  width: 100%;
+
+  &.isReady {
+    visibility: visible;
+  }
+
+  &.isDiscoBallZoomed {
+    &::before,
+    &::after {
+      background: #ff009d;
+      background: radial-gradient(
+        circle,
+        rgb(255, 0, 157) 49%,
+        rgb(0, 108, 241) 100%
+      );
+      border-radius: 100%;
+      content: "";
+      display: block;
+      filter: blur(37px);
+      height: clamp(300px, 55vh, 600px);
+      left: 50%;
+      mix-blend-mode: soft-light;
+      position: fixed;
+      top: 48%;
+      transform: translate(-50%, -50%);
+      width: clamp(300px, 45vw, 600px);
+      z-index: 1;
+    }
+
+    &::before {
+      // Slow pulsing blur animation
+      animation:
+        disco-pulse 4s ease-in-out infinite,
+        glow-fade-in-before 0.8s ease-out 2s forwards;
+      opacity: 0;
+    }
+
+    &::after {
+      animation: glow-fade-in-after 0.8s ease-out 2s forwards;
+      mix-blend-mode: hue;
+      opacity: 0;
+    }
+  }
+
+  @keyframes disco-pulse {
+    0%,
+    100% {
+      filter: blur(37px);
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+      filter: blur(45px);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  @keyframes glow-fade-in-before {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow-fade-in-after {
+    to {
+      opacity: 0.6;
+    }
+  }
+}
+
+.message {
+  animation: fade-in 300ms ease;
+  background: rgb(0 0 0 / 80%);
+  border-radius: 8px;
+  color: #fff;
+  display: none;
+  font-family: sans-serif;
+  font-size: 16px;
+  left: 50%;
+  padding: 12px 24px;
+  position: fixed;
+  top: 20px;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.backToDanceFloorButton {
+  align-items: center;
+  animation: back-button-fade-in 0.8s ease-out 0.5s forwards;
+  background: transparent;
+  border: none;
+  bottom: unset;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  font-size: 20px;
+  gap: 0.75rem;
+  left: unset;
+  opacity: 0;
+  padding: 1rem 2rem;
+  pointer-events: auto;
+  position: fixed;
+  right: 3rem;
+  top: 2.5rem;
+  transform: none;
+  transition: all 0.3s ease;
+  z-index: 1000;
+
+  &:hover {
+    transform: translateX(5px);
+
+    .backButtonIcon {
+      transform: rotate(90deg);
+    }
+  }
+
+  @media (max-width: $bp-md) {
+    font-size: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    right: 1rem;
+    top: 2rem;
+  }
+}
+
+.backButtonText {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  @media (max-width: $bp-sm) {
+    display: none;
+  }
+}
+
+.backButtonIcon {
+  align-items: center;
+  background: white;
+  border-radius: 50%;
+  color: black;
+  display: flex;
+  font-size: 1.25rem;
+  font-weight: bold;
+  height: 2rem;
+  justify-content: center;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  width: 2rem;
+
+  @media (max-width: $bp-md) {
+    font-size: 1rem;
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+}
+
+@keyframes back-button-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.discoBallInstruction {
+  animation: instruction-fade-in 1s ease-out 0.3s forwards;
+  bottom: 4rem;
+  color: white;
+  font-family: var(--font-vc-henrietta), "VC Henrietta Trial", sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+
+  /* stylelint-disable-next-line property-no-unknown, order/properties-alphabetical-order */
+  leading-trim: both;
+  left: 50%;
+  line-height: 140%; /* 23.8px */
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  text-align: center;
+
+  /* stylelint-disable-next-line property-no-unknown */
+  text-edge: cap;
+  transform: translateX(-50%);
+  width: 80%;
+  z-index: 100;
+
+  @media (max-width: $bp-md) {
+    font-size: 14px;
+  }
+}
+
+@keyframes instruction-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.mobileTutorialOverlay {
+  align-items: center;
+  background: linear-gradient(
+    180deg,
+    rgb(0 0 0 / 65%) 0%,
+    rgb(0 0 0 / 25%) 100%
+  );
+  display: flex;
+  height: 100%;
+  inset: 0;
+  justify-content: center;
+  pointer-events: auto;
+  position: fixed;
+  width: 100%;
+  z-index: 2000; // above canvas and buttons
+}
+
+.mobileTutorialImage {
+  animation: pulse 2s ease-in-out infinite;
+  height: auto;
+  max-width: min(45vw, 360px);
+  opacity: 0.9;
+  width: 100%;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}

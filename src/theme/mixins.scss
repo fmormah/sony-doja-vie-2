@@ -1,0 +1,36 @@
+@use "./tokens" as *;
+
+@mixin focus-ring($color: $color-white) {
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  transition: outline-color 150ms ease-in-out;
+
+  &:focus-visible {
+    outline-color: $color;
+  }
+}
+
+@mixin button-reset {
+  align-items: center;
+  border: 0;
+  border-radius: $radius-pill;
+  cursor: pointer;
+  display: inline-flex;
+  height: $btn-height;
+  justify-content: center;
+}
+
+@mixin button-typography {
+  /* Typography: button--b */
+  font-family: CompactaPro, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 90%;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-xl) {
+    font-size: 24px;
+  }
+}

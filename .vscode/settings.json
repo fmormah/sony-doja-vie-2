@@ -1,0 +1,18 @@
+{
+  "px-to-rem.baseFontSize": 16,
+  "px-to-rem.numberOfDecimals": 4,
+  "cssrem.rootFontSize": 16,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  },
+  "stylelint.validate": ["css", "scss"],
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "src\\/.*\\.(css|scss)$",
+        "isAsync": true,
+        "cmd": "npx postcss ${file} --config postcss.config.mjs --no-map --syntax postcss-scss -o ${file}"
+      }
+    ]
+  }
+}
