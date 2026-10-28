@@ -20,13 +20,13 @@ interface EventData {
 
 // Tracking is disabled for this project. Keep the API for existing UI callers.
 
-export const trackEvent = (_data: EventData): void => {};
+export const trackEvent = (data: EventData): void => { void data; };
 
 type TrackingValue =
   | { [k: string]: boolean | string | number | null }
   | undefined;
 
-export const trackCategory = (_category: string, _value?: TrackingValue): void => {};
+export const trackCategory = (category: string, value?: TrackingValue): void => { void category; void value; };
 
 export const trackMusicService = (
   service: "spotify" | "apple",
